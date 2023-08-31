@@ -61,6 +61,23 @@ const ItemCtrl = (function() {
 			// Return total
 			return data.totalCalories;
 		},
+		getItemById: function(id) {
+			let found = null;
+			// Loop through items
+			data.items.forEach(item => {
+				if (item.id === id) {
+					found = item;
+				}
+			});
+			return found;
+
+		},
+		setCurrentItem: function(item) {
+			data.currentItem = item;
+		},
+		getCurrentItem: function() {
+			return data.currentItem;
+		},
 
 		logData: function() {
 			return data;
@@ -129,6 +146,11 @@ const UICtrl = (function() {
 			document.querySelector(UISelectors.itemNameInput).value = '';
 			document.querySelector(UISelectors.itemCaloriesInput).value = '';
 		},
+		addItemToForm: function() {
+			document.querySelector(UISelectors.itemNameInput).value = ItemCtrl.getCurrentItem().name;
+			document.querySelector(UISelectors.itemCaloriesInput).value = ItemCtrl.getCurrentItem().calories;
+			UICtrl.showEditState();
+		},
 		showTotalCalories: function(totalCalories) {
 			document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
 		},
@@ -138,6 +160,12 @@ const UICtrl = (function() {
 			document.querySelector(UISelectors.deleteBtn).style.display = 'none';
 			document.querySelector(UISelectors.backBtn).style.display = 'none';
 			document.querySelector(UISelectors.addBtn).style.display = 'inline';
+		},
+		showEditState: function(){
+			document.querySelector(UISelectors.updateBtn).style.display = 'inline';
+			document.querySelector(UISelectors.deleteBtn).style.display = 'inline';
+			document.querySelector(UISelectors.backBtn).style.display = 'inline';
+			document.querySelector(UISelectors.addBtn).style.display = 'none';
 		},
 
 		getSelectors: function() {
@@ -206,6 +234,16 @@ const App = (function(ItemCtrl, UiCtrl) {
 			
 			// Get the actual id
 			const id = parseInt(listIdArr[1]);
+
+			// Get item
+			const itemToEdit = ItemCtrl.getItemById(id);
+
+			// set current item
+			ItemCtrl.setCurrentItem(itemToEdit);
+
+			// Add item to form
+			UICtrl.addItemToForm();
+
 		}
 
 		e.preventDefault();
